@@ -1,39 +1,525 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-    <title>Website của tôi</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tìm Kiếm Khóa Học - AusbildungInfo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            line-height: 1.6;
+        .search-container {
+            background-color: #f9f9f9;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
         }
-        header {
-            background-color: #f4f4f4;
-            padding: 20px;
-            text-align: center;
+        
+        .search-form {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
         }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+        
+        @media (min-width: 768px) {
+            .search-form {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (min-width: 992px) {
+            .search-form {
+                grid-template-columns: 2fr 1fr 1fr 1fr;
+            }
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .btn-search {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-search:hover {
+            background-color: #053971;
+        }
+        
+        .btn-search i {
+            margin-right: 0.5rem;
+        }
+        
+        .filter-toggle {
+            background-color: var(--secondary-color);
+            border: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        
+        .advanced-filters {
+            display: none;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+        
+        .advanced-filters.show {
+            display: block;
+        }
+        
+        .checkboxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+        }
+        
+        .checkbox-group input {
+            margin-right: 0.5rem;
+        }
+        
+        .results-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .sort-options {
+            display: flex;
+            align-items: center;
+        }
+        
+        .sort-options label {
+            margin-right: 0.5rem;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+            list-style: none;
+        }
+        
+        .pagination li {
+            margin: 0 0.25rem;
+        }
+        
+        .pagination a {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            text-decoration: none;
+            color: var(--primary-color);
+            border: 1px solid #ddd;
+            transition: all 0.3s ease;
+        }
+        
+        .pagination a:hover,
+        .pagination a.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Chào mừng đến với website của tôi</h1>
+        <!-- Header giống như trang chủ -->
     </header>
     
-    <div class="container">
-        <h2>Giới thiệu</h2>
-        <p>Đây là website đầu tiên của tôi được tạo bằng GitHub Pages.</p>
+    <main class="container">
+        <h1 class="main-title">Tìm Kiếm Khóa Học Ausbildung</h1>
         
-        <h2>Liên hệ</h2>
-        <p>Email: example@email.com</p>
-    </div>
+        <section class="search-container">
+            <div class="filter-toggle" id="filterToggle">
+                <span>Bộ lọc nâng cao</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            
+            <form class="search-form" id="searchForm">
+                <div class="form-group">
+                    <label for="keyword">Từ khóa:</label>
+                    <input type="text" id="keyword" class="form-control" placeholder="Nhập tên nghề, công ty...">
+                </div>
+                
+                <div class="form-group">
+                    <label for="location">Địa điểm:</label>
+                    <select id="location" class="form-control">
+                        <option value="">Tất cả</option>
+                        <option value="Berlin">Berlin</option>
+                        <option value="Hamburg">Hamburg</option>
+                        <option value="München">München</option>
+                        <option value="Köln">Köln</option>
+                        <option value="Frankfurt">Frankfurt</option>
+                        <!-- Thêm các thành phố khác ở Đức -->
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="industry">Ngành nghề:</label>
+                    <select id="industry" class="form-control">
+                        <option value="">Tất cả</option>
+                        <option value="technology">Công nghệ thông tin</option>
+                        <option value="healthcare">Y tế</option>
+                        <option value="manufacturing">Sản xuất</option>
+                        <option value="business">Kinh doanh</option>
+                        <option value="engineering">Kỹ thuật</option>
+                        <!-- Thêm các ngành nghề khác -->
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>&nbsp;</label>
+                    <button type="submit" class="btn-search">
+                        <i class="fas fa-search"></i> Tìm kiếm
+                    </button>
+                </div>
+                
+                <div class="advanced-filters" id="advancedFilters">
+                    <div class="form-group">
+                        <label>Thời gian bắt đầu:</label>
+                        <div class="checkboxes">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="startImmediate" name="start_date" value="immediate">
+                                <label for="startImmediate">Ngay lập tức</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="start3Months" name="start_date" value="3months">
+                                <label for="start3Months">Trong 3 tháng</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="start6Months" name="start_date" value="6months">
+                                <label for="start6Months">Trong 6 tháng</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="startNextYear" name="start_date" value="nextyear">
+                                <label for="startNextYear">Năm sau</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Thời gian đào tạo:</label>
+                        <div class="checkboxes">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="duration2" name="duration" value="2">
+                                <label for="duration2">2 năm</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="duration3" name="duration" value="3">
+                                <label for="duration3">3 năm</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="duration35" name="duration" value="3.5">
+                                <label for="duration35">3.5 năm</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Yêu cầu ngôn ngữ:</label>
+                        <div class="checkboxes">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="langA1" name="language" value="A1">
+                                <label for="langA1">A1</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="langA2" name="language" value="A2">
+                                <label for="langA2">A2</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="langB1" name="language" value="B1">
+                                <label for="langB1">B1</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="langB2" name="language" value="B2">
+                                <label for="langB2">B2</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="langC1" name="language" value="C1">
+                                <label for="langC1">C1</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+        
+        <section class="results-section">
+            <div class="results-info">
+                <div class="results-count">
+                    <span id="totalResults">0</span> kết quả tìm thấy
+                </div>
+                
+                <div class="sort-options">
+                    <label for="sortBy">Sắp xếp:</label>
+                    <select id="sortBy" class="form-control-sm">
+                        <option value="relevance">Mức độ phù hợp</option>
+                        <option value="recent">Mới nhất</option>
+                        <option value="start_date">Ngày bắt đầu</option>
+                        <option value="company">Công ty</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="coursesContainer" class="course-grid">
+                <!-- Dữ liệu khóa học sẽ được đổ vào đây bằng JavaScript -->
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i> Đang tải dữ liệu...
+                </div>
+            </div>
+            
+            <ul class="pagination" id="pagination">
+                <!-- Phân trang sẽ được tạo bằng JavaScript -->
+            </ul>
+        </section>
+    </main>
+    
+    <footer>
+        <!-- Footer giống như trang chủ -->
+    </footer>
+    
+    <script>
+        // JavaScript để xử lý tương tác giao diện
+        document.addEventListener('DOMContentLoaded', function() {
+            // Xử lý hiển thị/ẩn bộ lọc nâng cao
+            const filterToggle = document.getElementById('filterToggle');
+            const advancedFilters = document.getElementById('advancedFilters');
+            
+            filterToggle.addEventListener('click', function() {
+                advancedFilters.classList.toggle('show');
+                const icon = filterToggle.querySelector('i');
+                icon.classList.toggle('fa-chevron-down');
+                icon.classList.toggle('fa-chevron-up');
+            });
+            
+            // Xử lý form tìm kiếm
+            const searchForm = document.getElementById('searchForm');
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const page = 1; // Reset về trang 1 khi tìm kiếm mới
+                searchCourses(page);
+            });
+            
+            // Hàm tìm kiếm khóa học
+            function searchCourses(page = 1) {
+                // Hiển thị loading
+                document.getElementById('coursesContainer').innerHTML = `
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Đang tải dữ liệu...
+                    </div>
+                `;
+                
+                // Lấy các giá trị tìm kiếm
+                const keyword = document.getElementById('keyword').value;
+                const location = document.getElementById('location').value;
+                const industry = document.getElementById('industry').value;
+                const sortBy = document.getElementById('sortBy').value;
+                
+                // Lấy các giá trị lọc nâng cao
+                const startDates = Array.from(document.querySelectorAll('input[name="start_date"]:checked')).map(el => el.value);
+                const durations = Array.from(document.querySelectorAll('input[name="duration"]:checked')).map(el => el.value);
+                const languages = Array.from(document.querySelectorAll('input[name="language"]:checked')).map(el => el.value);
+                
+                // Tạo URL tìm kiếm với các tham số
+                let searchParams = new URLSearchParams();
+                if (keyword) searchParams.append('keyword', keyword);
+                if (location) searchParams.append('location', location);
+                if (industry) searchParams.append('industry', industry);
+                if (sortBy) searchParams.append('sort', sortBy);
+                if (startDates.length) searchParams.append('start_dates', startDates.join(','));
+                if (durations.length) searchParams.append('durations', durations.join(','));
+                if (languages.length) searchParams.append('languages', languages.join(','));
+                searchParams.append('page', page);
+                
+                // Gọi API tìm kiếm
+                const apiUrl = `/api/ausbildung-data?${searchParams.toString()}`;
+                
+                fetch(apiUrl)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Lỗi khi tải dữ liệu');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Hiển thị kết quả
+                        displayResults(data);
+                        
+                        // Cập nhật số lượng kết quả
+                        document.getElementById('totalResults').textContent = data.totalResults;
+                        
+                        // Tạo phân trang
+                        createPagination(data.currentPage, data.totalPages);
+                    })
+                    .catch(error => {
+                        console.error('Lỗi:', error);
+                        document.getElementById('coursesContainer').innerHTML = `
+                            <div class="error-message">
+                                <p>Đã xảy ra lỗi khi tìm kiếm. Vui lòng thử lại sau.</p>
+                            </div>
+                        `;
+                    });
+            }
+            
+            // Hàm hiển thị kết quả tìm kiếm
+            function displayResults(data) {
+                const container = document.getElementById('coursesContainer');
+                
+                if (!data.courses || data.courses.length === 0) {
+                    container.innerHTML = `
+                        <div class="no-results">
+                            <p>Không tìm thấy khóa học nào phù hợp với tiêu chí tìm kiếm của bạn.</p>
+                            <p>Vui lòng thử lại với các tiêu chí khác.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const coursesHTML = data.courses.map(course => `
+                    <div class="course-card">
+                        <div class="course-image">
+                            <i class="fas fa-briefcase fa-3x"></i>
+                        </div>
+                        <div class="course-content">
+                            <h3 class="course-title">${escapeHTML(course.title)}</h3>
+                            <p class="course-details">
+                                <strong>Công ty:</strong> ${escapeHTML(course.company)}<br>
+                                <strong>Địa điểm:</strong> ${escapeHTML(course.location)}<br>
+                                <strong>Ngày bắt đầu:</strong> ${escapeHTML(course.start_date)}
+                            </p>
+                            <div class="course-description">
+                                ${truncateText(escapeHTML(course.description), 150)}
+                            </div>
+                            <a href="/course-details.html?id=${course._id}" class="btn">Chi tiết</a>
+                        </div>
+                    </div>
+                `).join('');
+                
+                container.innerHTML = coursesHTML;
+            }
+            
+            // Hàm tạo phân trang
+            function createPagination(currentPage, totalPages) {
+                const pagination = document.getElementById('pagination');
+                currentPage = parseInt(currentPage);
+                
+                if (totalPages <= 1) {
+                    pagination.innerHTML = '';
+                    return;
+                }
+                
+                let paginationHTML = '';
+                
+                // Nút Previous
+                paginationHTML += `
+                    <li>
+                        <a href="#" class="page-link" data-page="${currentPage > 1 ? currentPage - 1 : 1}" ${currentPage <= 1 ? 'style="opacity: 0.5; pointer-events: none;"' : ''}>
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                `;
+                
+                // Hiển thị tối đa 5 trang
+                const startPage = Math.max(1, currentPage - 2);
+                const endPage = Math.min(totalPages, startPage + 4);
+                
+                for (let i = startPage; i <= endPage; i++) {
+                    paginationHTML += `
+                        <li>
+                            <a href="#" class="page-link ${i === currentPage ? 'active' : ''}" data-page="${i}">
+                                ${i}
+                            </a>
+                        </li>
+                    `;
+                }
+                
+                // Nút Next
+                paginationHTML += `
+                    <li>
+                        <a href="#" class="page-link" data-page="${currentPage < totalPages ? currentPage + 1 : totalPages}" ${currentPage >= totalPages ? 'style="opacity: 0.5; pointer-events: none;"' : ''}>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                `;
+                
+                pagination.innerHTML = paginationHTML;
+                
+                // Thêm event listener cho các nút phân trang
+                const pageLinks = document.querySelectorAll('.page-link');
+                pageLinks.forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const page = this.getAttribute('data-page');
+                        searchCourses(page);
+                        
+                        // Cuộn lên đầu kết quả tìm kiếm
+                        document.querySelector('.results-section').scrollIntoView({ behavior: 'smooth' });
+                    });
+                });
+            }
+            
+            // Hàm hỗ trợ
+            function escapeHTML(str) {
+                if (!str) return '';
+                return str
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
+            }
+            
+            function truncateText(text, maxLength) {
+                if (!text) return '';
+                if (text.length <= maxLength) return text;
+                return text.substr(0, maxLength) + '...';
+            }
+            
+            // Tải dữ liệu ban đầu
+            searchCourses(1);
+        });
+    </script>
 </body>
 </html>
